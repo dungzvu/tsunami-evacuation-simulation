@@ -1,0 +1,61 @@
+\documentclass{beamer}
+\usetheme{uic}
+\usepackage{amsfonts,amsmath,oldgerm,algorithm,algpseudocode}
+\usepackage[font=small,labelfont=bf]{caption} % Required for specifying captions to tables and figures
+
+\newcommand{\hrefcol}[2]{\textcolor{uihteal}{\href{#1}{#2}}}
+\newcommand{\testcolor}[1]{\colorbox{#1}{\textcolor{#1}{test}}~\texttt{#1}}
+
+% Please see Section 18.1 of Beamer User Guide for all the options \usefonttheme provides
+\usefonttheme[onlymath]{serif}
+% \usefonttheme{serif} % use this if you would like Serif font throughout (and not just for math)
+
+
+\titlebackground*{assets/uic_lockup_blue.pdf}
+
+% NOTE 1: The asterisk splits the background image. This option is good
+% for logo-based backgrounds. If you use an image based background
+% it's recommended to not split it:
+
+% \titlebackground{assets/uic_seo.jpg}
+
+% NOTE 2: If you use a title background that does not have a logo, you might
+% want to enable logo in the top left.
+% To do that, simply comment out this line
+\themecolor{lightnologo}
+
+\title{Get started with the UIC Beamer Theme}
+\subtitle{Using \LaTeX\ to prepare slides}
+% This can be adjusted accordingly for longer titles
+\setlength{\titleboxwidth}{0.45\textwidth}
+
+\author{\href{mailto:umunee2@uic.edu}{Usama Muneeb}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\themecolor{lightnologo} % reverts to a logo based theme (if you disabled it for title page)
+
+% enabled after title page creation (i.e. after \maketitle)
+\footlinecolor{uicblue}
+
+
+\begin{frame}[fragile]{Beamer for UIC presentations}
+\framesubtitle{A quick start}
+If you would like \LaTeX\ in your presentation, Beamer is a great way to go!
+\begin{itemize}
+\item Beamer has a detailed
+\hrefcol{https://www.ctan.org/tex-archive/macros/latex/contrib/beamer/doc/beameruserguide.pdf}{user
+ manual}, but we will go over the most common features.
+\item This template is designed for a 16:9 aspect ratio, which is the default in PowerPoint and the most common amongst projectors.
+\item The most common of all slide types involve bulleted points, like these. \pause
+\begin{itemize}
+\item Placing \verb|\pause| after items will allow you to sequentially unroll points.
+\item Changing \verb|\begin{itemize}| to \verb|\begin{itemize}[<+->]| achieves a similar effect, although \verb|\pause| gives finer control on the unrolling.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+% \backmatter
+\end{document}

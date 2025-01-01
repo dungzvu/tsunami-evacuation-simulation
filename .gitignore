@@ -1,1 +1,16 @@
 topic/*
+
+*.aux
+*.bbl
+*.blg
+*.brf
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.vrb
