@@ -11,7 +11,7 @@
 % \usefonttheme{serif} % use this if you would like Serif font throughout (and not just for math)
 
 
-\titlebackground*{assets/uic_lockup_blue.pdf}
+\titlebackground*{assets/usth_lockup_blue.png}
 
 % NOTE 1: The asterisk splits the background image. This option is good
 % for logo-based backgrounds. If you use an image based background
@@ -24,12 +24,12 @@
 % To do that, simply comment out this line
 \themecolor{lightnologo}
 
-\title{Get started with the UIC Beamer Theme}
-\subtitle{Using \LaTeX\ to prepare slides}
+\title{Modeling and simulation of complex systems}
+\subtitle{Project 4: Evacuation}
 % This can be adjusted accordingly for longer titles
 \setlength{\titleboxwidth}{0.45\textwidth}
 
-\author{\href{mailto:umunee2@uic.edu}{Usama Muneeb}}
+\author{\href{mailto:dungvt2440071@usth.edu.vn}{Vu Trung Dung}}
 \date{\today}
 
 \begin{document}
@@ -40,22 +40,228 @@
 \footlinecolor{uicblue}
 
 
-\begin{frame}[fragile]{Beamer for UIC presentations}
-\framesubtitle{A quick start}
-If you would like \LaTeX\ in your presentation, Beamer is a great way to go!
+% ------------------------------------------------
+% Question
+% ------------------------------------------------
+\begin{frame}[fragile]{Question}
+% \framesubtitle{}
+\textbf{How to better manage the pedestrian evacuation of a population on a beach
+in a tsunami context?}
+
 \begin{itemize}
-\item Beamer has a detailed
-\hrefcol{https://www.ctan.org/tex-archive/macros/latex/contrib/beamer/doc/beameruserguide.pdf}{user
- manual}, but we will go over the most common features.
-\item This template is designed for a 16:9 aspect ratio, which is the default in PowerPoint and the most common amongst projectors.
-\item The most common of all slide types involve bulleted points, like these. \pause
-\begin{itemize}
-\item Placing \verb|\pause| after items will allow you to sequentially unroll points.
-\item Changing \verb|\begin{itemize}| to \verb|\begin{itemize}[<+->]| achieves a similar effect, although \verb|\pause| gives finer control on the unrolling.
-\end{itemize}
+\item flooding will not be modeled by itself
+\item just \textbf{the behavior of residents} in the face of the threat.
 \end{itemize}
 \end{frame}
 
 
-% \backmatter
+% ------------------------------------------------
+% Modeling
+% ------------------------------------------------
+\begin{frame}[fragile]{Modeling and Simulation}
+\framesubtitle{Situation}
+\begin{itemize}
+\item People will only evacuate if they have been informed of the imminent risk of flooding. 
+\begin{itemize}
+    \item We assume that only \textbf{10\% of the population is informed at the beginning of the simulation}.
+    \item A person observing someone evacuating
+    (at a distance of less than 10m) will have a probability of 0.1 of evacuating in turn.
+\end{itemize}
+\item \textbf{Not all residents know where to evacuate} and only 10\% will go directly to the shelter.
+\item People have multiple modalities of evacuation: they can evacuate by car, by bike, or on foot.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Modeling and Simulation}
+\framesubtitle{Situation - My extension}
+\begin{itemize}
+\item \textbf{The knowledge of the evacuation shelter can be transfered across people}.
+\begin{itemize}
+    \item The knowledge of the evacuation shelter can be shared with 2 people at 10\% probability when they meet each other on the road while evacuating.
+    \item When the knowledge is shared, 2 people have 10\% probability to change their evacuation to the closest shelter they're heading to.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Modeling and Simulation}
+\framesubtitle{Strategies to aware of flooding}
+
+Different strategies of aware of flooding to the 10\% of the population:
+\begin{itemize}
+    \item random.
+    \item furthest from the shelter.
+    \item closest to the shelter.
+\end{itemize}
+
+\textbf{Find the most effective} of these strategies in terms of:
+\begin{itemize}
+    \item number of evacuees.
+    \item evacuation time.
+    \item time for the total evacuation/time spent on the roads.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Modeling and Simulation}
+\framesubtitle{Parameters}
+
+\begin{itemize}
+    \item initial population.
+    \item the alert time before the flooding.
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------
+% GIS DATA
+% ------------------------------------------------
+\begin{frame}[fragile]{GIS Data}
+% \framesubtitle{The }
+GIS data of the city of Hanoi, Vietnam.
+
+% TODO: insert the map image
+
+\end{frame}
+
+
+% ------------------------------------------------
+% Implementation - Extensions
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation (GAMA)}
+\framesubtitle{Extensions}
+
+\begin{itemize}
+    \item \textbf{Extensions 0}: GIS map, population, evacuation shelter, roads, flooding simulation, etc.
+    \item \textbf{Extensions 1}: The evacuating behavior of the population.
+    \item \textbf{Extensions 2}: Multimobility of population (car, bike, foot).
+    \item \textbf{My Extensions}: The knowledge of the evacuation shelter can be transfered across people.
+    \item \textbf{Extensions 3}: Experiment and analyze the effectiveness of different strategies of aware of flooding.
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------
+% Implementation - Extensions 0
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 0}
+\framesubtitle{The Map}
+
+
+\end{frame}
+
+
+% ------------------------------------------------
+% Implementation - Extensions 0
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 0}
+\framesubtitle{Species}
+
+\begin{itemize}
+    \item \textbf{People}: the inhabitants of the city.
+    \item \textbf{Evacuation Shelter}: the shelter for evacuation.
+    \item \textbf{Road}: the road for evacuation.
+    \item \textbf{Building}: the building in the city.
+    \item \textbf{Flooding}: the flooding area.
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------
+% Implementation - Extensions 0
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 0}
+\framesubtitle{Species - Flooding}
+
+
+
+\end{frame}
+
+% ------------------------------------------------
+% Implementation - Extensions 1
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 1}
+\framesubtitle{Species - People behavior}
+
+% Random 10\% of the population is informed at the beginning of the simulation.
+% A person observing someone evacuating (at a distance of less than 10m) will have a probability of 0.1 of evacuating in turn.
+% Not all residents know where to evacuate and only 10\% will go directly to the shelter.
+
+\end{frame}
+
+
+% ------------------------------------------------
+% Implementation - Extensions 2
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 2}
+\framesubtitle{Multimobility of population}
+
+% People have multiple modalities of evacuation: they can evacuate by car, by bike, or on foot.
+% Traffic jam, speed, etc.
+
+\end{frame}
+
+% ------------------------------------------------
+% Implementation - Extensions 2
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: My Extensions}
+\framesubtitle{Transfer knowledge of evacuation shelter}
+    
+% The knowledge of the evacuation shelter can be shared with 2 people at 10\% probability when they meet each other on the road while evacuating.
+% When the knowledge is shared, 2 people have 10\% probability to change their evacuation to the closest shelter they're heading to.
+% Expose as a new parameter.
+    
+\end{frame}
+
+% ------------------------------------------------
+% Implementation - Extensions 3 - Random
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 3}
+\framesubtitle{Trategies: Random}
+    
+
+\end{frame}
+
+% ------------------------------------------------
+% Implementation - Extensions 3 - Furthest
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 3}
+\framesubtitle{Trategies: Furthest}
+    
+
+\end{frame}
+
+% ------------------------------------------------
+% Implementation - Extensions 3 - Closet
+% ------------------------------------------------
+\begin{frame}[fragile]{Implementation: Extensions 3}
+\framesubtitle{Trategies: Closet}
+    
+
+\end{frame}
+
+% ------------------------------------------------
+% Experiment - Comparison
+% ------------------------------------------------
+\begin{frame}[fragile]{Experiment}
+\framesubtitle{Comparison}
+
+% Setup the randomness.
+% A grid of experiments to compare the effectiveness of different strategies of aware of flooding. Y is the strategy, X is the parameter (initial population, alert time before the flooding, transfer knowlege on/off).
+% Find the sensitivity of the parameters.
+
+\end{frame}
+
+% ------------------------------------------------
+% Experiment - Batch exploration
+% ------------------------------------------------
+\begin{frame}[fragile]{Experiment}
+\framesubtitle{Batch exploration}
+
+% Batch exploration to find the most effective strategy.
+
+\end{frame}
+
+\backmatter
 \end{document}

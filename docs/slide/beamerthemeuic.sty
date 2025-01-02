@@ -60,8 +60,8 @@
 }
 \footlinecolor{} % Default: no footline (enabled after title page)
 
-\pgfdeclareimage[width=0.09\paperwidth]{redlogo}{assets/circular_rgb.png}
-\pgfdeclareimage[width=0.09\paperwidth]{whitelogo}{assets/circular_white.png}
+\pgfdeclareimage[width=0.09\paperwidth]{redlogo}{assets/logo.png}
+\pgfdeclareimage[width=0.09\paperwidth]{whitelogo}{assets/logo_white.pdf}
 \pgfdeclareimage[width=0.01\paperwidth,height=0.09\paperwidth]{nologo}{assets/placeholder.png}
 \newcommand{\@UIClogo}{redlogo}
 
@@ -138,7 +138,7 @@
 \setbeamertemplate{frametitle}{%
   \vspace*{-3.65ex}
   \vspace*{\titlemanualoffset}
-  \begin{beamercolorbox}[leftskip=2cm]{frametitle}%
+  \begin{beamercolorbox}[leftskip=0cm]{frametitle}%
     \usebeamerfont{frametitle}\insertframetitle\\
     % Setting an invisible placeholder subtitle will fix the title in a constant position
     % This is due to the way the default template is defined in `beamerouterthemedefault.sty'
@@ -282,7 +282,7 @@
     \centering
     \begin{minipage}{0.4\textwidth}
       \usebeamercolor[fg]{normal text}
-      \centering\huge{Thank you!}
+      \centering\huge{Q \& A}
     \end{minipage}
   \end{frame}
 \endgroup
