@@ -32,16 +32,17 @@ global{
 	float step <- 10#s;
 	
 	// Param
+	int flooding_inform_before_minutes <- 120;
+	
 	string initial_inform_strategy <- "random";
 	
 	int max_n_inhabitants_in_building <- 5;
 	date starting_date <- date([1980,1,2,8,0,0]);
-	
-	date flooding_date <- date([1980,1,2,8,30,0]);
-	
 	date flooding_inform_date <- date([1980,1,2,8,0,0]);
 	
-	int nb_of_people <- 1000;
+	date flooding_date <- starting_date + flooding_inform_before_minutes#minute update: starting_date + flooding_inform_before_minutes #minute;
+	
+	int nb_of_people <- 3000;
 	
 	float percentage_of_people_are_informed <- 0.1;
 	float percentage_of_people_known_shelter <- 0.1;
@@ -55,7 +56,7 @@ global{
 	
 	
 	init {
-		create building from: shapefile_buildings with:[height::int(read("height"))];
+		create building from: shapefile_buildings;
 		
 		create road from: shapefile_roads;
       	
@@ -109,10 +110,12 @@ global{
 		int nb_informing_people <- int(percentage_of_people_are_informed * length(inhabitant));
 		
 		if (initial_inform_strategy = "random") {
+			write("Strategy: Random");
 			ask nb_informing_people among inhabitant {
 	      		do evacuate();
 	      	}
       	} else if (initial_inform_strategy = "furthest") {
+      		write("Strategy: Furthest");
       		ask inhabitant {
       			distance_to_shelter <- max(evacuations collect distance_to(self, each));
       		}
@@ -120,8 +123,10 @@ global{
       			do evacuate();
       		}
       	} else {
+      		write("Strategy: Closest");
       		ask inhabitant {
       			distance_to_shelter <- min(evacuations collect distance_to(self, each));
+      			write("distance_to_shelter " + distance_to_shelter);
       		}
       		ask nb_informing_people first (inhabitant sort_by each.distance_to_shelter) {
       			do evacuate();
@@ -133,11 +138,11 @@ global{
 		road_weights <- road as_map (each::each.shape.perimeter / each.speed_rate);
 	}
 	
-	reflex stop {
-		if length(inhabitant) = 0 {
-			do pause;
-		}
-	}
+//	reflex stop {
+//		if length(inhabitant) = 0 {
+//			do pause;
+//		}
+//	}
 	
 }
 
@@ -149,7 +154,6 @@ species building {
 	
 	list<inhabitant> inhabitants;
 	
-	int height;
 	aspect default {
 		draw shape color: (is_evacuation) ? #red: #gray;
 	}

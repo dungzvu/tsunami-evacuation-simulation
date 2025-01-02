@@ -46,7 +46,7 @@
 % ------------------------------------------------
 \begin{frame}[fragile]{Question}
 % \framesubtitle{}
-\textbf{How to better manage the pedestrian evacuation of a population on a beach
+\textbf{How to better manage the evacuation of a population on a beach
 in a tsunami context?}
 
 \begin{itemize}
@@ -517,11 +517,78 @@ reflex flooding_announce when: flooding_inform_date <= current_date and !floodin
 \begin{frame}[fragile]{Experiment}
 \framesubtitle{Comparison}
 
-% Setup the randomness.
-% A grid of experiments to compare the effectiveness of different strategies of aware of flooding. Y is the strategy, X is the parameter (initial population, alert time before the flooding, transfer knowlege on/off).
-% Find the sensitivity of the parameters.
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{itemize}
+    \item Run 3-simulations in parallel.
+    \item Draw a chart to compare number of evacuees in realtime.
+\end{itemize}
+\end{column}
+
+\begin{column}{0.6\textwidth}
+    \includegraphics[width=0.8\textwidth]{img/Comparison-Experiment.png}
+    \captionof{figure}{Multiple simulation}
+\end{column}
+
+\end{columns}
+% \captionof{figure}{}
 
 \end{frame}
+
+
+% ------------------------------------------------
+\begin{frame}[fragile]{Experiment}
+\framesubtitle{Comparison - Result (1)}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=0.8\textwidth]{img/3-Simulation-500people.png}
+\captionof{figure}{number of people = 500}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\includegraphics[width=0.8\textwidth]{img/3-Simulation-1000people.png}
+\captionof{figure}{number of people = 1000}
+\end{column}
+
+\end{columns}
+% \captionof{figure}{}
+
+\end{frame}
+
+
+% ------------------------------------------------
+\begin{frame}[fragile]{Experiment}
+\framesubtitle{Comparison - Result (2)}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=0.8\textwidth]{img/3-Simulation-2000people.png}
+\captionof{figure}{number of people = 2000}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\includegraphics[width=0.8\textwidth]{img/3-Simulation-3000people.png}
+\captionof{figure}{number of people = 3000}
+\end{column}
+
+\end{columns}
+% \captionof{figure}{}
+
+\end{frame}
+
+% ------------------------------------------------
+\begin{frame}[fragile]{Experiment}
+\framesubtitle{Comparison - Conclusion}
+
+\begin{itemize}
+    \item The \textbf{random strategy} is the most effective on term of the number of evacuees.
+    \item The \textbf{closest strategy} is the most effective on term of the evacuation time.
+    \item If we have enough number of people and enough time, there is no difference between the strategies.
+\end{itemize}
+
+\end{frame}
+    
 
 % ------------------------------------------------
 % Experiment - Batch exploration
@@ -530,6 +597,7 @@ reflex flooding_announce when: flooding_inform_date <= current_date and !floodin
 \framesubtitle{Batch exploration}
 
 % Batch exploration to find the most effective strategy.
+TODO
 
 \end{frame}
 
