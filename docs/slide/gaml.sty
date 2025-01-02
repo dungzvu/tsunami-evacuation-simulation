@@ -1,0 +1,26 @@
+\ProvidesPackage{gaml}[2025/01/02]
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+% Define GAML styling
+\lstdefinelanguage{GAML}{
+  morekeywords={first,sort_by,ask,self,shape,current_date,every,float,reflex,when,create,number,any_location_in,one_of,each,length,myself,where,any,and,or,among,closest_to,int,empty,flip,else,if,at_distance,overlapping,do,die,update,sum,collect,exp,min,as_map},
+  sensitive=true,
+  morecomment=[l]--,
+  morestring=[b]",
+}
+
+% Define styles for different languages
+\lstdefinestyle{GAML}{
+  language=GAML,
+  basicstyle=\scriptsize\ttfamily\color{darkgray},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+}
+
