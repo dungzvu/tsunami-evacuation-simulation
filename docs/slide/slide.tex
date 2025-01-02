@@ -308,7 +308,7 @@ reflex observe_evaculating when: !is_evacuating and flip(percentage_of_following
 reflex find_shelter when: target = nil and is_evacuating every(5#s) {
     building target_building <- target_shelter;
     if (target_building = nil) {
-        target_building <- one_of(building - visited_buildings);
+        target_building <- one_of((building - visited_buildings) where each.is_safe);
     }
     visited_buildings << target_building;
     target <- any_location_in(target_building);
