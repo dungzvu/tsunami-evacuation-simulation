@@ -10,36 +10,35 @@ model base
 
 
 global{
-	// SHAPE
+	// SHAPE definitions
 	shape_file shapefile_buildings  <- shape_file("../includes/buildings.shp");
 	shape_file shapefile_roads 		<- shape_file("../includes/clean_roads.shp");
 	shape_file shapefile_evacuation <- shape_file("../includes/evacuation.shp");
 	shape_file shapefile_river		<- shape_file("../includes/RedRiver_scnr1.shp");
-		
 	geometry shape <- envelope(shapefile_roads);
 	
-	// STATE
+	// STATE of the model
 	map<road,float> road_weights;
 	building shelter;
 	graph road_network;
 	bool is_finished;
 	
 	
-	// MONITOR
+	// MONITOR metrics
 	int number_evacuted_people <- 0;
 	int total_evacuation_time <- 0;
 	int total_time_in_roads <- 0;
-	float efficiency -> total_evacuation_time / (total_time_in_roads+1);
+	float efficiency -> number_evacuted_people * flooding_alert_time_minutes#m / (total_time_in_roads+1);
 	
 	float step <- 10#s;
 	
 	// PARAMETERS
 	int flooding_alert_time_minutes <- 120;
-	
 	string initial_inform_strategy <- "random";
-	int max_n_inhabitants_in_building <- 5;
 	int nb_of_people <- 1000;
 	
+	// fixed parameters
+	int max_n_inhabitants_in_building <- 5;
 	float percentage_of_people_are_informed <- 0.1;
 	float percentage_of_people_known_shelter <- 0.1;
 	float percentage_of_following_evaculating <- 0.1;
@@ -48,20 +47,18 @@ global{
 	float percentage_of_walking <- 0.1;
 	float pedestrians_speed <- 5 #km/#h; 
 	float traffic_weight_factor <- 1.0;
-	// Extended
-	float percentage_of_share_shelter -> _can_share_shelter_knowledge ? 0.1 : 0.0;
-	bool _can_share_shelter_knowledge <- false;
-	
 	
 	init {
 		create building from: shapefile_buildings;
 		create road from: shapefile_roads;
-		create red_river from:shapefile_river;
       	
 		road_network <- as_edge_graph(road);
-		shelter <- building with_max_of each.shape.area;
+//		shelter <- building with_max_of each.shape.area;
+		shelter <- first_with(building, each.index = 1106);
 		shelter.is_shelter <- true;
 		
+		// initialize the people mobilities. For each inhabitant, we assign .mobility for displaying,
+		// .speed for moving and .traffic_weight for calculating the road's weight.
 		int count <- 0;
 		create inhabitant number: nb_of_people {
 			count <- count + 1;
@@ -79,18 +76,22 @@ global{
 				mobility <- "foot";
 			}
        		
+       		// each people is placed to the random building, each building includes no more than 5 people.
        		ask any(building where (!each.is_shelter and length(each.inhabitants) < max_n_inhabitants_in_building)) {
 				self.inhabitants << myself;
 				myself.location <- any_location_in(self);
 			}
       	}
       	
+      	// announce the flooding/tsumani at the beginning of the simulation.
+      	// the simulation then will finish within the alert time (which represented by flooding_alert_time_minutes parameter)
       	do flooding_announce();
 	}
 	
 	action flooding_announce {		
 		int nb_informing_people <- int(percentage_of_people_are_informed * length(inhabitant));
 		
+		// initialize the different informing strategies at the begining.
 		if (initial_inform_strategy = "random") {
 			write("Strategy: Random");
 			ask nb_informing_people among inhabitant {
@@ -113,12 +114,16 @@ global{
 		road_weights <- road as_map (each::each.shape.perimeter / each.speed_rate);
 	}
 	
-	reflex check_end_simulation when: length(inhabitant) = 0 and !is_finished {
+	// the simulation ends if the people are all evacuated or the time is up.
+	reflex check_end_simulation when: !is_finished and (length(inhabitant) = 0 or (time > flooding_alert_time_minutes#minute)) {		
+		ask inhabitant {
+			do die;
+		}
+		
 		is_finished <- true;
 	}
 	
 }
-
 
 
 species building {
@@ -135,6 +140,7 @@ species building {
 species road {
 	
 	float capacity 	<- 1 + shape.perimeter/10;
+	// calculate the total traffic weight of each road by the mobility traffic weight of all people on road.
 	float total_traffic_weight 	<- 0.0 update: sum((inhabitant at_distance 1) collect each.traffic_weight);
 	float speed_rate <- 1.0 update:  exp(-total_traffic_weight/capacity) min: 0.1;
 	
@@ -145,14 +151,20 @@ species road {
 
 
 species inhabitant skills: [moving]{	
+	// I keep a list of visited buildings to prevent people continue visiting the same place.
 	list<building> visited_buildings <- [];
-	date start_evacuating_date;
 	
+	// Whether this person known about the shelter at the beginning.
 	bool known_shelter;
+	
+	// Evacuation status
 	bool is_evacuating <- false;
+
 	point target;
 	
 	rgb color -> is_evacuating ? #blue : #yellow;
+	
+	// The moving attributes
 	float speed <- 5 #km/#h;
 	float traffic_weight;
 	string mobility;
@@ -168,11 +180,7 @@ species inhabitant skills: [moving]{
 	}
 	
 	action evacuate {
-		if(!is_evacuating) {
-			start_evacuating_date <- current_date;
-		}
 		is_evacuating <- true;
-		write("Evacuate "+self);
 	}
 	
 	reflex move when: target != nil {
@@ -181,8 +189,13 @@ species inhabitant skills: [moving]{
 			location <- target;
 			target <- nil;
 		}		
+		
+		// Calculate the total time in roads by continuously increase the total in global
+		// The inhabitant agent will be killed after evacuated, so don't worry about the correctness of this formula.
+		total_time_in_roads <- total_time_in_roads + step;
 	}
 	
+	// Trigger when people see any evacuating people at distance of 20m.
 	reflex observe_evaculating when: !is_evacuating and flip(percentage_of_following_evaculating) {
 		list evacuation_in_range <- (inhabitant where each.is_evacuating) at_distance 20#m;
 		if !empty(evacuation_in_range) {
@@ -190,14 +203,13 @@ species inhabitant skills: [moving]{
 			if (flip(percentage_of_people_known_shelter)) {
 				known_shelter <- true;
 			}
-			write("observe evaculating");
 		}
 	}
 	
-	reflex check_and_route when: target = nil and is_evacuating {
+	// continously find the shelter or go directly to the shelter if it at 20m distance.
+	reflex find_shelter when: is_evacuating {
 		if (shelter distance_to self < 1#m) {
 			number_evacuted_people <- number_evacuted_people + 1;
-			total_time_in_roads <- total_time_in_roads + (current_date - start_evacuating_date);
 			total_evacuation_time <- total_evacuation_time + time;
 			do die;
 			return;
@@ -205,7 +217,6 @@ species inhabitant skills: [moving]{
 		
 		building target_building <- known_shelter ? shelter : nil;
 		if (target_building = nil) {
-			write("randomly find another shelter");
 			if (shelter distance_to self < 20#m) {
 				target_building <- shelter;
 			}
@@ -225,45 +236,6 @@ species evacuation{
 	}
 }
 
-// Represents the red river
-species red_river{
-	
-	float grow_rate <- 0.5;
-	float flooding_speed <- 0.1;
-	
-	reflex expand when: time >= flooding_alert_time_minutes#minute and every(1#m) 
-	{
-		grow_rate <- grow_rate + flooding_speed;
-		shape <- shape + grow_rate;
-	}
-	
-	reflex kill {
-		bool destroyedRoad;
-		
-		ask (inhabitant overlapping self.shape) {
-			do die;
-		}
-		
-		ask (building overlapping self.shape) {
-			is_safe <- false;
-		}
-		
-		ask (road overlapping self.shape) {
-			destroyedRoad <- true;
-			do die;
-		}
-		if (destroyedRoad) {
-			road_network <- as_edge_graph(road);
-			road_weights <- road as_map (each::each.shape.perimeter / each.speed_rate);
-		}
-	}
-	
-	aspect default {
-		draw shape color:#blue;
-	}
-}
-
-
 experiment evacuation_exp type: gui virtual: true {
 	
 	float minimum_cycle_duration <- 0.05;
@@ -277,7 +249,6 @@ experiment evacuation_exp type: gui virtual: true {
 			species building;
 			species road;
 			species inhabitant;
-			species red_river;
 		}
 	}
 }
