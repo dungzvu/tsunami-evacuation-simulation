@@ -1,0 +1,110 @@
+\usepackage[english]{babel}
+
+\title{\textbf{\textsf{Modeling and Simulation Project: Evacuation}}}
+\date{\today}
+\author{\textbf{Professor: Alexis Drogoul} \\ \\ Vu Trung Dung | dungvt2440071@usth.edu.vn }
+
+% math
+\usepackage{amsmath, amssymb}
+
+% references
+\usepackage[style=apa, backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+
+% fonts
+\usepackage{helvet}
+\usepackage{sectsty}
+\allsectionsfont{\sffamily} % for section titltes use sans-serif
+% \renewcommand{\familydefault}{\sfdefault} % comment out for sans-serif font
+% \usepackage{sansmath} % comment out for sans-serif math font
+% \sansmath % comment out for sans-serif math font
+
+% margins
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  total={170mm,257mm},
+  left=25mm,
+  right=25mm,
+  top=30mm,
+  bottom=30mm,
+}
+
+% no indentation when a new paragraph starts
+\setlength{\parindent}{0cm}
+
+% links
+\usepackage{hyperref} % better links
+\usepackage{color}    % nicer link colors
+\definecolor{pigment}{rgb}{0.2, 0.2, 0.6}
+\hypersetup{
+  colorlinks = true, % Color links instead of ugly boxes
+  urlcolor   = pigment, % Color for external hyperlinks
+  linkcolor  = black, % Color for internal links
+  citecolor  = pigment % Color for citations
+}
+
+% headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ADEMP-PreReg Template for Simulation Studies}
+\chead{}
+\rhead{}
+
+% example boxes
+\usepackage{tcolorbox}
+\newtcolorbox{examplebox}{
+  colback=white,
+  colframe=gray!30,
+  title=Example,
+  sharp corners,
+  boxrule=0.5pt,
+  coltitle=black
+}
+
+\newtcolorbox{codebox}{
+  colback=white,
+  colframe=gray!40,
+  title=GAMA,
+  sharp corners,
+  boxrule=0.5pt,
+  coltitle=black
+}
+
+% conditionals
+\usepackage{ifthen}
+\newboolean{showinstructions}
+\newboolean{showexamples}
+\newboolean{showexplanations}
+\renewenvironment{examplebox}{%
+  \ifthenelse{\boolean{showexamples}}%
+    {\begin{tcolorbox}[colback=white, colframe=gray!30, title=Example, sharp corners, boxrule=0.5pt, coltitle=black]}%
+    {\expandafter\comment}%
+}{%
+  \ifthenelse{\boolean{showexamples}}%
+    {\end{tcolorbox}}%
+    {\expandafter\endcomment}%
+}
+
+% Define a new environment for explanations
+\newcommand{\explanation}[1]{%
+  \ifthenelse{\boolean{showexplanations}}%
+    {\textit{Explanation:} #1}%
+    {\ignorespaces}%
+}
+
+% Define a new environment for instructions
+\newcommand{\instructions}[1]{%
+  \ifthenelse{\boolean{showinstructions}}%
+    {#1}%
+    {\ignorespaces}%
+}
+
+\makeatletter
+\newcommand{\maketitlepage}{%
+    % \begin{titlepage}
+        \maketitle
+        \thispagestyle{empty}
+    % \end{titlepage}
+}
+\makeatother
