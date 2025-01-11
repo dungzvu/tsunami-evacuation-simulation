@@ -264,19 +264,50 @@ But after conducting the simulation, I found that this is not a good metric to e
 
 To correct this, I suggest the \textbf{Efficiency} metric to be calculated by the formula:
 \begin{align*}
-    \text{Efficiency} = \frac{\text{Total Evacuated people}}{\text{Total Time in Roads}}
+    \text{Efficiency} = \frac{\text{Total Evacuated people} \times \text{Alert Time}}{\text{Total Time in Roads} + 1}
 \end{align*}
 
-This metric will give a better evaluation of the strategy, as it tries to minimize the time people spend wandering on the roads to inform others and search for the shelter, and maximize the number of people informed, resulting in the total number of people evacuated.\\
+This metric will give a better evaluation of the strategy, as it tries to minimize the time people spend wandering on the roads to inform others and search for the shelter, and maximize the number of people informed, resulting in the total number of people evacuated. The $\text{+1}$ is added to avoid the division by zero. The scaling of the $\text{Alert Time}$ is added to make the division to be in the same unit.\\
 
 Note that the chance of people successfully finding the shelter is random, and can't be controlled by the strategy. \textbf{The strategy only affects the number of people informed and the time they spend wandering on the roads, which possibility increases the chance of successfully evacuated people}.\\
 
 \subsection{Results}
 
-In this experiments, I conducted the simulation with different strategies and alert times. I also made the comparison between the different strategies by running multiple strategies in parallel. The results are presented in the Fig \ref{fig:results-single} and Fig \ref{fig:results-compare}.
+In this experiments, I conducted the simulation with different strategies and alert times. I also made the comparison between the different strategies by running them in parallel. About the map, I used the map of \textbf{Hanoi and the Red River} in the previous exercises. The shelter in this map is the one in the right-bottom corner (colored in green in the Fig \ref{fig:map}).\\ 
 
-In the end, I created the batch exploration to examine which strategy is the most efficient, with the variability of the alert time and number of people. To got the diversity of the results, I also conducted the simulation within the different maps. The results are presented in the Fig \ref{fig:batch}.
+However, this building is too far from the others, which makes the evacuation process more difficult, since it's hard to people to realize it at distance 20m while wandering around. I made a change by selecting the building in the center-bottom of the map as the shelter. It is presented in red color in the Fig \ref{fig:map}. A quick experiment showed that in the settings of 3000 people and 2 hours of alert time, the number of evacuated people is increased to 298 compared to 248 of the previous shelter. Since the new shelter is more accessible, the results of comparison between the strategies are more reliable, as they eliminate the luck factor involved in finding the shelter and focus on the efficiency of the strategies.\\
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{../images/map0.png}
+    \caption{The GIS data of Hanoi and the Red River. The largest building is in the bottom-right corner (colored in green). The shelter is in the center of the map (colored in red).}
+    \label{fig:map}
+\end{figure}
+
+A single simulation of the evacuation process is presented in the Fig \ref{fig:results-single}. \\
+
+The comparison of the different strategies in number of evacuated people is presented in the Fig \ref{fig:evacuees_over_time}. The experiment is conducted with 2000 and 4000 people, 2 hours alert time among the different strategies. The results show that, at the settings of large number of people, the \textbf{closest} strategy is the one that save the most people, followed by the \textbf{furthest} strategy, and the \textbf{random} strategy is the least efficient. At smaller number of people, the three strategies have similar results. In all cases, the \textbf{random} strategy introduces the fastest evacuation process at the beginning. These findings can be explained by some reasons:
+\begin{itemize}
+    \item The \textbf{random} strategy is the fastest at the beginning because the people are randomly selected, which means they are distributed evenly across the map, so the people can start finding the shelter from diverse locations, which reduces the traffic congestion and the time people spend wandering on the roads, but the chance of people finding the shelter isn't increased.
+    \item The \textbf{closest} strategy introduces the largest number of people saved because the people closest to the shelter have chance to inform others closed to the shelter as well, which increases the chance of people finding the shelter.
+\end{itemize}
+
+Next, I conducted the batch exploration to examine which strategy is the most efficient, which determined in the previous section. The results are presented in the Fig \ref{fig:batch}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{../images/single-simulation.png}
+    \caption{The evacuation simulation with 1000 people, \textbf{random} strategy and 2 hours evacuate time. The right chart is the total number of evacuated people over time. The red building in the right-bottom corner is the shelter.}
+    \label{fig:results-single}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{../images/evacuees_over_time.png}
+    \caption{The comparison of the different strategies in number of evacuated people over time.}
+    \label{fig:evacuees_over_time}
+\end{figure}
 
 % --------------------------
 % 4. Discussion
